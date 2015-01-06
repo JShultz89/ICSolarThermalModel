@@ -1,0 +1,7 @@
+\BOOKMARK [1][-]{section.0.1}{Residual: Heat Balance Between Thermal Fluid and Surrounding Air}{}% 1
+\BOOKMARK [2][-]{subsection.0.1.1}{Region 1}{section.0.1}% 2
+\BOOKMARK [2][-]{subsection.0.1.2}{Region 2}{section.0.1}% 3
+\BOOKMARK [1][-]{section.0.2}{Temperature Solver}{}% 4
+\BOOKMARK [2][-]{subsection.0.2.1}{Using Equation 1: Equations for qwater, determine A12, A22, and F1}{section.0.2}% 5
+\BOOKMARK [2][-]{subsection.0.2.2}{Using Equation 2: Equations for qair, determing A22, A23, and F2}{section.0.2}% 6
+\BOOKMARK [2][-]{subsection.0.2.3}{Solving Unknowns}{section.0.2}% 7

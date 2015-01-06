@@ -1,0 +1,84 @@
+\documentclass[12pt]{report}
+\usepackage[latin1]{inputenc}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[portrait]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,amssymb}
+\usepackage{color,graphicx,overpic}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{cancel}
+
+\author{Justin Shultz}
+\title{Integrated Concentrating Solar Thermal Transport Heat Loss}
+\begin{document}
+
+The below equations are those used in the modeling of Integrated Concentrating Solar and Heat Losses for a High Temperature Thermal Fluid and Surrounding Air Cavity of a Double Skin Facade.
+
+Definitions: 
+
+$\theta_i$ = Temperature of water at node "i"
+
+$\phi_i$ = Temperature of water at node "i"
+
+where:
+
+$ T_i = \theta_i; \; T_{i+1} = \phi_i; \; T_{i+2} = theta_{i+1}; \; T_{i+3} = \theta_{i+1}$ and so on 
+
+\section{Residual: Heat Balance Between Thermal Fluid and Surrounding Air}
+
+\subsection{Region 1}
+Pipe region heat balance:
+$$ Q_{water} = m_{water} C_{p_{water}} (T_{i+2}-T_i) - 
+		\frac
+			{\left( 
+				\frac{T_{i+3}-T_{i+1}}{2} - \frac{T_{i+2}-T_{i}}{2} 
+			\right)}
+		{R_{Pipe}}
+		= 0 $$
+
+$$ R_{Pipe} = 
+	\frac{1}
+	{h_{intPipe} A_{insideSurface}} 
+	+ \frac{
+		\frac{r_{o_{tubing}}}
+		{r_{i_{tubing}}}
+		}
+		{k_{siliconTubing} A_{tubingSurface}} 
+	+ \frac{
+		\frac{r_{o_{insulation}}}
+		{r_{i_{tubing}}}
+		}
+		{k_{Insulation} A_{InsulationSurface}} 
+	+ \frac{1}
+	{h_{extPipe} A_{outsideSurface}} $$
+
+This equation is then reused for the air balance:
+$$ Q_{air} = m_{air} C_{p_{air}} (T_{i+3}-T_{i+1}) 
+	+ \frac{
+		\left( 
+			\frac{T_{i+3}-T_{i+1}}{2} 
+			- \frac{T_{i+2}-T_{i}}{2} 
+		\right)}
+		{R_{Pipe}} 
+	- \frac{T_{interior} - \frac{T_{i+3}+T_P{i+1}}{2}}{R_{IntToCavity}}
+	- \frac{T_{exterior} - \frac{T_{i+3}+T_P{i+1}}{2}}{R_{ExtToCavity}} = 0 $$
+	
+$$ R_{IntToCavity} = \frac{L_{glass}}{k_{glass}  A_{surface}} 
+	+ \frac{L_{gap}}{k_{argon}  A_{surface}} 
+	\frac{L_{glass}}{k_{glass}  A_{surface}} $$
+	
+$$ R_{ExtToCavity} = \frac{L_{glass}}{k_{glass}  A_{surface}}$$
+
+\subsection{Region 2}
+
+$$ Q_{water} = m_{water} C_{p_{water}} (T_{i+4} - T_{i+2}) + Q_{receiver} $$
+
+$$ Q_{air} = m_{air} C_{p_{air}} (T_{i+5} - T_{i+3}) + Q_{receiver} $$
+        
+
+        
+\end{document}

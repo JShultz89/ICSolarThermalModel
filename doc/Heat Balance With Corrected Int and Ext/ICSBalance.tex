@@ -1,0 +1,277 @@
+\documentclass[12pt]{report}
+\usepackage[latin1]{inputenc}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[portrait]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,amssymb}
+\usepackage{color,graphicx,overpic}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{cancel}
+
+
+\author{Justin Shultz}
+\title{Integrated Concentrating Solar Thermal Transport Heat Loss}
+\begin{document}
+
+The below equations are those used in the modeling of Integrated Concentrating Solar and Heat Losses for a High Temperature Thermal Fluid and Surrounding Air Cavity of a Double Skin Facade.
+
+Definitions: 
+
+$\theta_i$ = Temperature of water at node "i"
+
+$\phi_i$ = Temperature of air at node "i"
+
+where:
+
+$ T_i = \theta_i; \; T_{i+1} = \phi_i; \; T_{i+2} = theta_{i+1}; \; T_{i+3} = \theta_{i+1}$ and so on 
+
+\subsection{Variables and Units}
+
+\begin{center}
+	\textbf{Water Variables} \\
+	\begin{tabular}{| l | l | l |}
+		\hline
+		Variable & Description & Unit  \\ \hline
+		$q_{water}$ & Heat transfer balance of water & $watt \; (W)$ \\ \hline
+		$m_{water}$ & Mass flow rate of water & $kg/s$ \\ \hline
+		$Cp_{water}$ & Specific heat capacity of water & $kJ/(kg K)$  \\ \hline
+		
+	\end{tabular}
+\end{center}
+
+
+\begin{center}
+	\textbf{Air Variables} \\
+	\begin{tabular}{| l | l | l |}
+		\hline
+		Variable & Description & Unit  \\ \hline
+		$q_{air}$ & Heat transfer balance of air & $watt \; (W)$ \\ \hline
+		$m_{air}$ & Mass flow rate of air & $kg/s$ \\ \hline
+		$Cp_{air}$ & Specific heat capacity of air & $kJ/(kg K)$  \\ \hline
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\textbf{Resistance Variables}
+	\begin{tabular}{| l | l | l |}
+		\hline
+		Variable & Description & Unit  \\ \hline
+		$R_{pipe}$ & Thermal resistance between water and air through insulated tubing & $(m^2 K)/W$ \\ \hline
+		$R_{int}$ & Thermal resistance between cavity air and interior air, IGU & $(m^2 K)/W$ \\ \hline
+		$R_{ext}$ & Thermal resistance between cavity air and exterior air, single layer & $(m^2 K)/W$ \\ \hline
+		$h_{pipe}$ & Convection heat transfer coefficient of the pipe & $W/(m^2 K)$ \\ \hline
+		$h_{PipeFlow}$ & Convection heat transfer of the water flow with tubing interior & $W/(m^2 K)$ \\ \hline
+		$h_{extPipeFlow}$ & Convection heat transfer of the air flow with tubing exterior & $W/(m^2 K)$ \\ \hline
+		$h_{cavity}$ & Convection heat transfer of the air flow within cavity & $W/(m^2 K)$ \\ \hline
+		$k_{siliconTubing}$ & Thermal conductivity of silicon tubing & $W/(m K)$ \\ \hline
+		$k_{insulation}$ & Thermal conductivity of insulation & $W/(m K)$ \\ \hline
+		$k_{glass}$ & Thermal conductivity of glass & $W/(m K)$ \\ \hline
+		$k_{argon}$ & Thermal conductivity of argon & $W/(m K)$ \\ \hline
+		$A_{insideS}$ & Inside surface area of tubing & $m^2$ \\ \hline
+		$A_{tubingS}$ & Outside surface area of tubing, not including insulation & $m^2$ \\ \hline
+		$A_{outsideS}$ & Outside surface area of tubing including insulation & $m^2$ \\ \hline
+		$A_{SurfGlass}$ & Surface area glass layer & $m^2$ \\ \hline
+		$r_{innerTubing}$ & Inside diameter of tubing (3 mm) & $m$ \\ \hline
+		$r_{outerTubing}$ & Outside diameter of tubing (4.5 mm), not including insulation & $m$ \\ \hline
+		$r_{insulation}$ & Outside diameter of tubing + insulation (14.2 mm) & $m$ \\ \hline
+		$L_{glass}$ & Thickness of glass layer & $m$ \\ \hline
+		$L_{gap}$ & Thickness of argon gap layer & $m$ \\ \hline
+	\end{tabular}
+\end{center}
+
+\begin{center}
+	\textbf{Heat Generation Variables}
+	\begin{tabular}{| l | l | l |}
+		\hline
+		Variable & Description & Unit  \\ \hline
+		$Q_{receiver}$ & Heat added to water by the copper heat sink & $W$ \\ \hline
+		$Q_{module}$ & Heat lost to air by the module before transfer to water & $W$ \\ \hline
+	\end{tabular}
+\end{center}
+
+\section{Residual: Heat Balance Between Thermal Fluid and Surrounding Air}
+
+\subsection{Region 1}
+\subsubsection{Water}
+Heat balance equation for the water in Region 1:
+$$ m_{water} C_{p_{water}} (T_{i+2}-T_i) = q_{wa} = h_{pipe} A \frac
+{\left( 
+	\frac{T_{i+3}+T_{i+1}}{2} - \frac{T_{i+2}+T_{i}}{2} 
+	\right)}
+{R_{Pipe}} $$
+
+\begin{equation}
+\boxed{q_{water} = m_{water} C_{p_{water}} (T_{i+2}-T_i) - 
+		\frac
+			{\left( 
+				\frac{T_{i+3}+T_{i+1}}{2} - \frac{T_{i+2}+T_{i}}{2} 
+			\right)}
+		{R_{Pipe}}
+		= 0 }
+\end{equation}
+
+$$ R_{Pipe} = 
+	\frac{1}
+	{h_{PipeFlow} A_{insideS}} 
+	+ \frac{
+		\frac{r_{outerTubing}}
+		{r_{innerTubing}}
+		}
+		{k_{siliconTubing} A_{tubingS}} 
+	+ \frac{
+		\frac{r_{insulation}}
+		{r_{outerTubing}}
+		}
+		{k_{Insulation} A_{outsideS}} 
+	+ \frac{1}
+	{h_{extPipeAirFlow} A_{outsideS}} $$
+
+\subsubsection{Air}
+Heat balance equation for the air in Region 1:
+\begin{equation}
+\boxed{q_{air} = m_{air} Cp_{air} (T_{i+3}-T_{i+1}) 
+	+ \frac{
+		\left( 
+			\frac{T_{i+3}+T_{i+1}}{2} 
+			- \frac{T_{i+2}+T_{i}}{2} 
+		\right)}
+		{R_{Pipe}} 
+	- \frac{T_{int} - T_{i+3}}{R_{Int}}
+	- \frac{T_{ext} - T_{i+3}}{R_{Ext}} = 0}
+\end{equation}
+	
+$$ R_{Int} = \frac{L_{glass}}{k_{glass}  A_{SurfGlass}} 
+	+ \frac{L_{gap}}{k_{argon}  A_{SurfGlass}} 
+	+ \frac{L_{glass}}{k_{glass}  A_{SurfGlass}} + \frac{1}{h_{cavity} A_{SurfGlass}}$$
+	
+$$ R_{Ext} = \frac{L_{glass}}{k_{glass}  A_{SurfGlass}} + \frac{1}{h_{cavity} A_{SurfGlass}}$$
+
+\subsection{Region 2}
+
+$$ Q_{water} = m_{water} C_{p_{water}} (T_{i+4} - T_{i+2}) + Q_{receiver} $$
+
+$$ Q_{air} = m_{air} C_{p_{air}} (T_{i+5} - T_{i+3}) + Q_{module} $$
+        
+\section{Temperature Solver}
+By rearranging the equations to separate temperatures, coefficients can be determined for each temperature. The input (or given) temperatures of the system can then be used to solve for the subsequent unknown temperatures. \textit{This study includes Regions 1 but excludes Region 2 to simplify the problem and exclude heat generation}.
+
+\subsection{Using Equation 1: Equations for $q_{water}$, determine $A_{12}$, $A_{22}$, and $F_1$}
+
+Equation 1, 
+$$q_{water} = m_{water} C_{p_{water}} (T_{i+2}-T_i) - 
+	\frac
+	{\left( 
+		\frac{T_{i+3}+T_{i+1}}{2} - \frac{T_{i+2}+T_{i}}{2} 
+		\right)}
+	{R_{Pipe}}
+	= 0 $$
+
+Rearrange into,
+$$ T_2 A_{12} + T_3 A_{13} = F_1 $$
+
+Rearrange to determine coefficient for $T_2$:
+$$ A_{12} = [m_w Cp_w + \frac{1}{2 R_{pipe}}] $$
+
+Rearrange to determine coefficients for $T_3$:
+$$ A_{13} = [- \frac{1}{2 R_pipe}] $$
+
+Rearrange all other temperatures ($T_0$ and $T_1$) to the right side of the equation and solve for coefficients to each:
+
+$$ F_1 = 
+	T_0 [m_w Cp_w - \frac{1}{2 R_{pipe}}]
+	+ T_1 [\frac{1}{2 R_{pipe}}]$$
+There is no dependence on $T_{int}$ and $T_{ext}$ in the water heat balance.
+
+\subsection{Using Equation 2: Equations for $q_{air}$, determing $A_{22}$, $A_{23}$, and $F_2$}
+
+Equation 2, 
+$$ q_{air} = m_{air} Cp_{air} (T_{i+3}-T_{i+1}) 
++ \frac{
+	\left( 
+	\frac{T_{i+3}+T_{i+1}}{2} 
+	- \frac{T_{i+2}+T_{i}}{2} 
+	\right)}
+{R_{Pipe}} 
+- \frac{T_{int} - T_{i+3}}{R_{Int}}
+- \frac{T_{ext} - T_{i+3}}{R_{Ext}} = 0 $$
+
+Rearrange into,
+$$ T_2 A_{22} + T_3 A_{23} = F_1 $$
+
+Rearrange to determine coefficients for $T_2$:
+$$ A_{22} = [- \frac{1}{2 R_{pipe}}] $$
+
+Rearrange to determine coefficients for $T_3$:
+$$ A_{23} = [ m_a Cp_a + \frac{1}{2 R_{pipe}} + \frac{1}{R_{int}} + \frac{1}{R_{ext}}] $$
+
+Rearrange all other temperatures ($T_0$, $T_1$, $T_{int}$ and $T_{ext}$) to the right side and solve for coefficients to each:
+$$ F_2 = 
+	T_0 [\frac{1}{2 R_{pipe}}] 
+	+ T_1 [m_a Cp_a - \frac{1}{2 R_{pipe}}] 
+	+ T_{int} [\frac{1}{R_{int}}]
+	+ T_{ext} [\frac{1}{R_{ext}}]$$
+
+
+\subsection{Solving Unknowns}
+The unknowns temperatures at $T_2$ and $T_3$. The unknown equations: 
+$$ T_2 A_{12} + T_3 A_{13} = F_1 $$
+$$ T_2 A_{12} + T_3 A_{23} = F_1 $$
+were plugged into MatLab in the form, 
+$$
+\left[ \begin{matrix}
+A_{12} & A_{13} \\
+A_{22} & A_{23} \\
+\end{matrix}\right] 
+\left[ \begin{matrix}
+T_{2} \\
+T_{3} \\
+\end{matrix}
+\right] 
+= \left[ \begin{matrix}
+F_1 \\
+F_2 \\
+\end{matrix}
+\right]
+$$
+and solving in Matlab using,
+$$ T = A \backslash F $$
+where, 
+$$ A = \left[ \begin{matrix}
+A_{12} & A_{13} \\
+A_{22} & A_{23} \\
+\end{matrix}\right] $$
+and
+$$ F = \left[ \begin{matrix}
+F_1 \\
+F_2 \\
+\end{matrix}
+\right] $$
+
+With the given values of,
+\begin{lstlisting}
+T_0 = 13;
+T_1 = 20;
+T_int = 22.5;
+T_ext = 25;
+m_w = 0.00084931862198712224;
+m_a = 0.3597862499999999;
+Cp_w = 4.188774760737728;
+Cp_a = 1.005; 
+R_pipe = 1472.0223510771341;
+R_int = 0.52972312781694775;
+R_ext = 0.10670725480107474;
+\end{lstlisting}
+the resultant temperatures are:
+\begin{lstlisting}
+T_2 = 14.970373956130462
+
+T_3 = 28.607571102687491
+\end{lstlisting}
+
+
+        
+\end{document}
