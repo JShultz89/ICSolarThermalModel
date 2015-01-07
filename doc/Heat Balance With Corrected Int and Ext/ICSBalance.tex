@@ -100,7 +100,7 @@ $ T_i = \theta_i; \; T_{i+1} = \phi_i; \; T_{i+2} = theta_{i+1}; \; T_{i+3} = \t
 Heat balance equation for the water in Region 1:
 $$ m_{water} C_{p_{water}} (T_{i+2}-T_i) = q_{wa} = h_{pipe} A \frac
 {\left( 
-	\frac{T_{i+3}+T_{i+1}}{2} - \frac{T_{i+2}+T_{i}}{2} 
+	T_{i+3} - T_{i+2}
 	\right)}
 {R_{Pipe}} $$
 
@@ -108,7 +108,7 @@ $$ m_{water} C_{p_{water}} (T_{i+2}-T_i) = q_{wa} = h_{pipe} A \frac
 \boxed{q_{water} = m_{water} C_{p_{water}} (T_{i+2}-T_i) - 
 		\frac
 			{\left( 
-				\frac{T_{i+3}+T_{i+1}}{2} - \frac{T_{i+2}+T_{i}}{2} 
+				T_{i+3} - T_{i+2}
 			\right)}
 		{R_{Pipe}}
 		= 0 }
@@ -136,8 +136,8 @@ Heat balance equation for the air in Region 1:
 \boxed{q_{air} = m_{air} Cp_{air} (T_{i+3}-T_{i+1}) 
 	+ \frac{
 		\left( 
-			\frac{T_{i+3}+T_{i+1}}{2} 
-			- \frac{T_{i+2}+T_{i}}{2} 
+			T_{i+3}
+			- T_{i+2}
 		\right)}
 		{R_{Pipe}} 
 	- \frac{T_{int} - T_{i+3}}{R_{Int}}
@@ -165,7 +165,7 @@ Equation 1,
 $$q_{water} = m_{water} C_{p_{water}} (T_{i+2}-T_i) - 
 	\frac
 	{\left( 
-		\frac{T_{i+3}+T_{i+1}}{2} - \frac{T_{i+2}+T_{i}}{2} 
+		T_{i+3} - T_{i+2} 
 		\right)}
 	{R_{Pipe}}
 	= 0 $$

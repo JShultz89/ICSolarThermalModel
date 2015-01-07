@@ -159,10 +159,10 @@ def Residue(m,T):
         print "Running module %d" %(i+1)
         # Odd region (transfer between water, air, interior, and exterior)
         # Calculate water temperature for region 1 (Transfer with air)
-        q_w1 = m_w * Cp('w', ((T[j+2]+T[j])/2)*(T[j+2]-T[j])) - ( ((T[j+3]+T[j+1])/2.0-(T[j+2]+T[j])/2.0) / R('pipe') )
+        q_w1 = m_w * Cp('w', ((T[j+2]+T[j])/2)*(T[j+2]-T[j])) - ((T[j+3]-T[j+2]) / R('pipe'))
         q[j] = q_w1
         # Calculate air temperature for region 1 (Transfer with water, interior and exterior)
-        q_a1 = m_a * Cp('a',(T[j+3]+T[j+1])/2) * (T[j+3]-T[j+1]) + (((T[j+3]+T[j+1])/2.0 - (T[j+2]+T[j])/2.0)/R('pipe')) - (T_int-T[j+3])/R('int') - (T_ext-T[j+3])/R('ext')
+        q_a1 = m_a * Cp('a',(T[j+3]+T[j+1])/2) * (T[j+3]-T[j+1]) + ((T[j+3]-T[j+2]) / R('pipe')) - (T_int-T[j+3])/R('int') - (T_ext-T[j+3])/R('ext')
         q[j+1] = q_a1
         
         # Even Region (Heat input)
@@ -178,9 +178,9 @@ def Differentiation():
     j = 0
     for i in range(0,m):
             ##### Region 1: Heat Balance in the Water #####
-            # q_w1 = m_w * Cp('w', ((T[j+2]+T[j])/2)*(T[j+2]-T[j])) - ( ((T[j+3]+T[j+1])/2.0-(T[j+2]+T[j])/2.0) / R('pipe') )
+            # q_w1 = m_w * Cp('w', ((T[j+2]+T[j])/2)*(T[j+2]-T[j])) - ((T[j+3]-T[j+2]) / R('pipe')) 
         # Derivative of R1 (water balance) with respect to T[j] (T[0])
-        dR1dT0_w = - m_w * Cp('w', (T[j+2]+T[j])/2) + 1.0/2.0 / R('pipe')
+        dR1dT0_w = - m_w * Cp('w', (T[j+2]+T[j])/2)
         if j == 0:
             #Do nothing
             pass
@@ -188,7 +188,7 @@ def Differentiation():
             dRdT[j,j-2] = dR1dT0_w
         
         # Derivative of R1 (water balance) with respect to T[j+1] (T[1]) 
-        dR1dT1_w = -1.0/2.0 / R('pipe')
+        dR1dT1_w = 0
         if j == 0:
             #Do nothing
             pass
@@ -196,20 +196,20 @@ def Differentiation():
             dRdT[j,j-1] = dR1dT1_w
     
         # Derivative of R1 (water balance) with respect to T[j+2] (T[2])
-        dR1dT2_w = m_w * Cp('w', ((T[j+2]+T[j])/2)) + 1.0/2.0/R('pipe')
+        dR1dT2_w = m_w * Cp('w', ((T[j+2]+T[j])/2)) + 1.0/R('pipe')
         dRdT[j,j] = dR1dT2_w
     
         # Derivative of R1 (water balance) with respect to T[j+3] (T[3]) 
-        dR1dT3_w = - 1.0/2.0/R('pipe')
+        dR1dT3_w = - 1.0/R('pipe')
         dRdT[j,j+1] = dR1dT3_w
     
     
     
     
             ##### Region 1: Heat Balance in the Air #####
-            # q_a1 = m_a * Cp('a',(T[j+3]+T[j+1])/2) * (T[j+3]-T[j+1]) + (((T[j+3]+T[j+1])/2.0 - (T[j+2]+T[j])/2.0)/R('pipe')) - (T_int-T[j+3])/R('int') - (T_ext-T[j+3])/R('ext')
+            # q_a1 = m_a * Cp('a',(T[j+3]+T[j+1])/2) * (T[j+3]-T[j+1]) + ((T[j+3]-T[j+2]) / R('pipe')) - (T_int-T[j+3])/R('int') - (T_ext-T[j+3])/R('ext')
         # Derivative of R1 (air balance) with respect to T[j] (T[0])
-        dR1dT0_a = -1.0/2.0/R('pipe')
+        dR1dT0_a = 0
         if j == 0:
             #Do nothing
             pass
@@ -217,7 +217,7 @@ def Differentiation():
             dRdT[j+1,j-2] = dR1dT0_a
     
         # Derivative of R1 (air balance) with respect to T[j+1] (T[1])
-        dR1dT1_a = - m_a * Cp('a',(T[j+3]+T[j+1])/2) + 1.0/2.0/R('pipe') 
+        dR1dT1_a = - m_a * Cp('a',(T[j+3]+T[j+1])/2) 
         if j == 0:
             #Do nothing
             pass
@@ -225,11 +225,11 @@ def Differentiation():
             dRdT[j+1,j-1] = dR1dT1_a    
         
         # Derivative of R1 (air balance) with respect to T[j+2] (T[2])
-        dR1dT2_a = -1.0/2.0/R('pipe')
+        dR1dT2_a = -1.0/R('pipe')
         dRdT[j+1,j] = dR1dT2_a
     
         # Derivative of R1 (air balance) with respect to T[j+3] (T[3])
-        dR1dT3_a = m_a * Cp('a',(T[j+3]+T[j+1])/2.0) + 1.0/2.0/R('pipe') + 1.0/R('int') + 1.0/R('ext')
+        dR1dT3_a = m_a * Cp('a',(T[j+3]+T[j+1])/2.0) + 1.0/R('pipe') + 1.0/R('int') + 1.0/R('ext')
         dRdT[j+1,j+1] = dR1dT3_a
         
         
