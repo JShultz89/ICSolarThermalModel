@@ -360,8 +360,8 @@ P_wall = 2*Height_wall + 2*Width_wall # Perimeter of the wall
 radius_cavity = 4 * 0.3*0.3 / (0.3*4) / 2  # Hydraulic diameter assuming cavity is 0.3 meters by 0.3 m (cross section)
 
 
-q_receiver = 8.0 # Heat flow into water from Module Heat Receiver
-q_module = 3.0 # Heat flow into air from Heat Loss from the Module
+q_receiver = 8.0*10**(-3) # Heat flow into water from Module Heat Receiver
+q_module = 3.0*10**(-3) # Heat flow into air from Heat Loss from the Module
 
 mode = 'forced' # Defines whether the air flow is 'forced' or 'natural'
 m_w = 8.5*10**(-7) * rho_w((T[0]+T[m*4])/2) # Mass flowrate of water = VolumetricFlowrate * DensityWater
