@@ -166,9 +166,9 @@ def Residue(m,T):
         q[j+1] = q_a1
         
         # Even Region (Heat input)
-        q_w2 = m_w * Cp('w',(T[j+4]+T[j+2])/2) * (T[j+4]-T[j+2]) + q_receiver
+        q_w2 = m_w * Cp('w',(T[j+4]+T[j+2])/2) * (T[j+4]-T[j+2]) - q_receiver
         q[j+2] = q_w2
-        q_a2 = m_a * Cp('a',(T[j+5]+T[j+3])/2) * (T[j+5]-T[j+3]) + q_module
+        q_a2 = m_a * Cp('a',(T[j+5]+T[j+3])/2) * (T[j+5]-T[j+3]) - q_module
         q[j+3] = q_a2
         j = j + 4
     return (q)
