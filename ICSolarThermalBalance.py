@@ -332,7 +332,7 @@ def UpdatedTemp(T):
     return T_final
     
 
-m = 2 # Number of Modules
+m = 3 # Number of Modules
 
 T_int = 22.5 # Temperature on the interior of the building, degrees [C]
 T_ext = 25.0 # Temperature on the exterior of the building, degrees [C]
