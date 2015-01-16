@@ -126,7 +126,7 @@ def R(interface):
         Resistance = FirstLayer + Interior_Convection
     return Resistance
 
-def GenTemperatureArray(m):
+def GenTemperatureArray(m, T_wi):
     # This function creates an array of temperature values (Even is air, Odd is water)
     # The values are an initial guess for use in the residue function
     count = 0
@@ -343,10 +343,12 @@ inlet = numpy.recfromcsv('nov25.csv',
 out_filename = 'outlet.txt'
 # numpy.loadtxt(out_filename)
 
+outlet_T_water = numpy.empty(len(inlet['timestamp']), dtype=float)
+
 T_int = 22.5 # Temperature on the interior of the building, degrees [C]
 T_ext = 25.0 # Temperature on the exterior of the building, degrees [C]
 T_ai = 20.0 # Inlet temperature of air, degrees [C]
-# T_wi = 13.0 # Inlet temperature of water, degrees [C] 
+# T_wi = specified below from input file 
 
 diameter_inside = 3.0*10**(-3)
 diameter_tubing = diameter_inside + 1.675*10**(-3)
@@ -367,7 +369,7 @@ count = 0
 while count < len(inlet['timestamp']):
     T_wi = inlet['tc_b2s3m6_inlet'][count] # Temperature on the interior of the building, degrees [C]
     
-    T = GenTemperatureArray(m)
+    T = GenTemperatureArray(m,T_wi)
     # print "Initial Temperature Array Guess"
     # print T
     # print     
@@ -390,5 +392,9 @@ while count < len(inlet['timestamp']):
     # print 
     T_final = UpdatedTemp(T)
     # print "Final Temperatures"
-    # print T_final
-    numpy.savetxt(out_filename, T_final, delimiter=',', newline='\n', header='', footer='', comments='# ')
+    print T_final
+    outlet_T_water[count] = T_final[len(T_final)-2]
+    print count
+    count = count + 1
+
+numpy.savetxt(out_filename, outlet_T_water, delimiter=',', newline='\n', header='', footer='', comments='# ')
