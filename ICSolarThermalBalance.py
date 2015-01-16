@@ -145,7 +145,7 @@ def GenTemperatureArray(m):
             T_a_tmp += 5 # Increase each water temperature by 5 degrees
         count += 1
     return T
-    #    print T
+    #    # print T
 
 
 def Residue(m,T):
@@ -156,7 +156,7 @@ def Residue(m,T):
     q = numpy.empty(m*4, dtype=float)
     j = 0
     for i in range(0,m):
-        print "Running module %d" %(i+1)
+        # print "Running module %d" %(i+1)
         # Odd region (transfer between water, air, interior, and exterior)
         # Calculate water temperature for region 1 (Transfer with air)
         q_w1 = m_w * Cp('w', ((T[j+2]+T[j])/2)*(T[j+2]-T[j])) - ((T[j+3]-T[j+2]) / R('pipe'))
@@ -297,13 +297,13 @@ def UpdatedTemp(T):
         Increment = numpy.squeeze(numpy.asarray(Increment))
         return Increment
         
-    print "Inverse Derivative Matrix"
-    print numpy.linalg.inv(dQ)
-    print 
+    # print "Inverse Derivative Matrix"
+    # print numpy.linalg.inv(dQ)
+    # print 
     Inc = Increment(dQ, q)
-    print "This is the initial increment"
-    print Inc
-    print 
+    # print "This is the initial increment"
+    # print Inc
+    # print 
     
     T_new = T[2:]
     
@@ -312,18 +312,18 @@ def UpdatedTemp(T):
     #while count < 2: # abs(numpy.amax(Inc)) > 10**(-4):
     T_new = T_new - Inc 
     T_local = numpy.concatenate([T[:2], T_new])
-    print "This is the temperature after %d increment" %(count)
-    print T_local
+    # print "This is the temperature after %d increment" %(count)
+    # print T_local
     print
     
     q_new = Residue(m,T_local)
-    print "Updating heat balance with new temperature"
-    print q_new
+    # print "Updating heat balance with new temperature"
+    # print q_new
     print
     
     Inc = Increment(dQ, q_new)
-    print "Updated increment"
-    print Inc
+    # print "Updated increment"
+    # print Inc
     print
     count =+ 1
     # time.sleep(5)
@@ -332,25 +332,21 @@ def UpdatedTemp(T):
     return T_final
     
 
+# Before now all code is functions
+
+# Code starts here to 
 m = 3 # Number of Modules
 
 inlet = numpy.recfromcsv('nov25.csv', 
                     delimiter=',')
 
-print inlet
-
-# exp = numpy.genfromtxt('nov25.csv',delimiter=',',dtype=(float,float,float))
-# print exp
+out_filename = 'outlet.txt'
+# numpy.loadtxt(out_filename)
 
 T_int = 22.5 # Temperature on the interior of the building, degrees [C]
 T_ext = 25.0 # Temperature on the exterior of the building, degrees [C]
 T_ai = 20.0 # Inlet temperature of air, degrees [C]
-T_wi = 13.0 # Inlet temperature of water, degrees [C]  
-
-T = GenTemperatureArray(m)
-print "Initial Temperature Array Guess"
-print T
-print 
+# T_wi = 13.0 # Inlet temperature of water, degrees [C] 
 
 diameter_inside = 3.0*10**(-3)
 diameter_tubing = diameter_inside + 1.675*10**(-3)
@@ -367,24 +363,32 @@ A_wall = Height_wall * Width_wall # Area of glass
 P_wall = 2*Height_wall + 2*Width_wall # Perimeter of the wall
 radius_cavity = 4 * 0.3*0.3 / (0.3*4) / 2  # Hydraulic diameter assuming cavity is 0.3 meters by 0.3 m (cross section)
 
-
-q_receiver = 8.0*10**(-3) # Heat flow into water from Module Heat Receiver
-q_module = 3.0*10**(-3) # Heat flow into air from Heat Loss from the Module
-
-mode = 'forced' # Defines whether the air flow is 'forced' or 'natural'
-m_w = 8.5*10**(-7) * rho_w((T[0]+T[m*4])/2) # Mass flowrate of water = VolumetricFlowrate * DensityWater
-v_a = 2.0 # Flow velocity [m/s]
-m_a = v_a * rho_a((13+30)/2) * radius_cavity # Mass Flowrate of air [kg/s] = velocity [m/s] * DensityAir [kg/m^3] * cross section [m^2]   
-     
-
-q = Residue(m,T)
-print "Residual heat balance array:"
-print q
-print 
-dQ = Differentiation()
-print "Derivative Matrix:"
-print dQ
-print
-T_final = UpdatedTemp(T)
-print "Final Temperatures"
-print T_final
+count = 0
+while count < len(inlet['timestamp']):
+    T_wi = inlet['tc_b2s3m6_inlet'][count] # Temperature on the interior of the building, degrees [C]
+    
+    T = GenTemperatureArray(m)
+    # print "Initial Temperature Array Guess"
+    # print T
+    # print     
+    
+    q_receiver = 8.0*10**(-3) # Heat flow into water from Module Heat Receiver
+    q_module = 3.0*10**(-3) # Heat flow into air from Heat Loss from the Module
+    
+    mode = 'forced' # Defines whether the air flow is 'forced' or 'natural'
+    m_w = 8.5*10**(-7) * rho_w((T[0]+T[m*4])/2) # Mass flowrate of water = VolumetricFlowrate * DensityWater
+    v_a = 2.0 # Flow velocity [m/s]
+    m_a = v_a * rho_a((13+30)/2) * radius_cavity # Mass Flowrate of air [kg/s] = velocity [m/s] * DensityAir [kg/m^3] * cross section [m^2]   
+    
+    q = Residue(m,T)
+    # print "Residual heat balance array:"
+    # print q
+    # print 
+    dQ = Differentiation()
+    # print "Derivative Matrix:"
+    # print dQ
+    # print 
+    T_final = UpdatedTemp(T)
+    # print "Final Temperatures"
+    # print T_final
+    numpy.savetxt(out_filename, T_final, delimiter=',', newline='\n', header='', footer='', comments='# ')
