@@ -309,30 +309,38 @@ def UpdatedTemp(T):
     
     count = 1
     
-    while abs(numpy.amax(Inc)) > 10**(-4):
-        T_new = T_new - Inc 
-        T_local = numpy.concatenate([T[:2], T_new])
-        print "This is the temperature after %d increment" %(count)
-        print T_local
-        print
-        
-        q_new = Residue(m,T_local)
-        print "Updating heat balance with new temperature"
-        print q_new
-        print
-        
-        Inc = Increment(dQ, q_new)
-        print "Updated increment"
-        print Inc
-        print
-        count =+ 1
-        time.sleep(5)
+    #while count < 2: # abs(numpy.amax(Inc)) > 10**(-4):
+    T_new = T_new - Inc 
+    T_local = numpy.concatenate([T[:2], T_new])
+    print "This is the temperature after %d increment" %(count)
+    print T_local
+    print
+    
+    q_new = Residue(m,T_local)
+    print "Updating heat balance with new temperature"
+    print q_new
+    print
+    
+    Inc = Increment(dQ, q_new)
+    print "Updated increment"
+    print Inc
+    print
+    count =+ 1
+    # time.sleep(5)
     
     T_final = numpy.concatenate([T[:2], T_new])
     return T_final
     
 
 m = 3 # Number of Modules
+
+inlet = numpy.recfromcsv('nov25.csv', 
+                    delimiter=',')
+
+print inlet
+
+# exp = numpy.genfromtxt('nov25.csv',delimiter=',',dtype=(float,float,float))
+# print exp
 
 T_int = 22.5 # Temperature on the interior of the building, degrees [C]
 T_ext = 25.0 # Temperature on the exterior of the building, degrees [C]
