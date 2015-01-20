@@ -3,7 +3,7 @@
 
 import numpy
 import math
-import time
+import matplotlib.pyplot as plt
 
 numpy.set_printoptions(linewidth=150)
 
@@ -133,7 +133,6 @@ def GenTemperatureArray(m, T_wi):
     T = numpy.empty(m*4+2, dtype=float)
     T_w_tmp = T_wi # Temperary value for the water 
     T_a_tmp = T_ai # Temperary value for the water
-    guessIncrement = 5 # Increases temperature in each stage by number, may not be necessary
     while count < 4*m+2:
         if count%2 == 0:
             T_tmp = T_w_tmp
@@ -142,7 +141,7 @@ def GenTemperatureArray(m, T_wi):
         else:
             T_tmp = T_a_tmp
             T[count] = T_tmp # Add the first water temeperature to the end of the array
-            T_a_tmp += 5 # Increase each water temperature by 5 degrees
+            T_a_tmp += 1 # Increase each water temperature by 5 degrees
         count += 1
     return T
     #    # print T
@@ -396,5 +395,10 @@ while count < len(inlet['timestamp']):
     outlet_T_water[count] = T_final[len(T_final)-2]
     print count
     count = count + 1
+
+# timestamp = inlet['timestamp'].astye(float)
+
+# plt.plot(inlet['timestamp'], inlet['tc_b2s3m4_outlet'], 'r--', inlet['timestamp'], outlet_T_water, 'bs')
+# plt.show()
 
 numpy.savetxt(out_filename, outlet_T_water, delimiter=',', newline='\n', header='', footer='', comments='# ')
