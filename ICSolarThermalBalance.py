@@ -373,12 +373,12 @@ while count < len(inlet['timestamp']):
     # print T
     # print     
     
-    q_receiver = 8.0*10**(-3) # Heat flow into water from Module Heat Receiver
+    q_receiver = (inlet['qs3m654w'][count])*10**(-3)/3.0 # 8.0*10**(-3) # Heat flow into water from Module Heat Receiver
     q_module = 3.0*10**(-3) # Heat flow into air from Heat Loss from the Module
     
     mode = 'forced' # Defines whether the air flow is 'forced' or 'natural'
     m_w = 8.5*10**(-7) * rho_w((T[0]+T[m*4])/2) # Mass flowrate of water = VolumetricFlowrate * DensityWater
-    v_a = 2.0 # Flow velocity [m/s]
+    v_a = 0.5 # Flow velocity [m/s]
     m_a = v_a * rho_a((13+30)/2) * radius_cavity # Mass Flowrate of air [kg/s] = velocity [m/s] * DensityAir [kg/m^3] * cross section [m^2]   
     
     q = Residue(m,T)
