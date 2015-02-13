@@ -1,18 +1,21 @@
-clear;
-clc;
+% clear;
+% clc;
 format long;
 
 T_0 = 13;
 T_1 = 20;
 T_int = 22.5;
 T_ext = 25;
-m_w = 0.00084931862198712224;
-m_a = 0.3597862499999999;
-Cp_w = 4.188774760737728;
+m_w = 8.5*10^(-7) * 998.8376 % mass flow rate = volumetric flowrate * density
+m_a = 2.0 * 1.1992875 * 0.3*0.3 % mass flow rate = velocity * density * cross-section
+Cp_w = 4.18759087915;
 Cp_a = 1.005; 
-R_pipe = 1472.0223510771341;
-R_int = 0.52972312781694775;
-R_ext = 0.10670725480107474;
+% radius_inside = 3*10^(-3);
+% length_tubing = 3.0;
+% h_w = 719.797570611;
+R_pipe = 20.7307482776; % = 1/(2*pi*radius_inside*length_tubing*h_w)
+R_int = 5.32864511015;
+R_ext = 1.10123830038;
 
 A_12 = m_w * Cp_w + 1/R_pipe;
 
@@ -24,7 +27,7 @@ F_1 = T_0 * (m_w * Cp_w) ...
 
 A_22 = -1/R_pipe;
 
-A_23 = m_a * Cp_a + 1/2/R_pipe + 1/R_int + 1/R_ext;
+A_23 = m_a * Cp_a + 1/R_pipe + 1/R_int + 1/R_ext;
 
 F_2 = T_1 * (m_a * Cp_a) ...
     + T_0 * (0) ...

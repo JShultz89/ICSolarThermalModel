@@ -24,6 +24,7 @@ def Cp(liquid, T):
     elif liquid == "a":
         # The specifc heat of air does not change over the temperature region of the system
         Cp = 1.005
+    print 'The specific heat of ' ,str(liquid), " is ", Cp
     return Cp # Return the specific heat
 
 def rho_a(T): # kg/m^3
@@ -31,6 +32,7 @@ def rho_a(T): # kg/m^3
     p2 =    -0.00483 
     p3 =       1.293 
     rho = p1*T**2 + p2*T + p3
+    print "Density of ", str(rho_a), " is ", rho
     return rho
     
 def rho_w(T):
@@ -38,6 +40,7 @@ def rho_w(T):
     p2 =    -0.09298
     p3 =        1001
     rho = p1*T**2 + p2*T + p3
+    print "Density of", str(rho_w), " is ", rho
     return rho
 
 def h(interface, T): 
@@ -96,6 +99,7 @@ def h(interface, T):
             Re  = v_a * L / viscosity_a(T)
             Nu = 0.0296*Re**(4.0/5.0)*Pr_a(T)**(1.0/3.0)
         h = k / L * Nu # L the characteristic length that should match the Nu L term
+    print "Convection heat transfer coefficient of ", str(interface), " is ", h
     return h
 
 def R(interface):
@@ -103,8 +107,8 @@ def R(interface):
         # Resistance = Convenction_interior + Silicone Pipe + Insulation + Convection_exterior
         # A is cross sectional area
         R.R_conv_wt = 1.0/(2.0 * math.pi * diameter_inside * tubing_length * h('w', (T[0]+T[m*4])/2.0 ))    # Convection from water to tubing
-        R.R_cond_t = math.log((diameter_tubing)/(diameter_inside)) / (2 * math.pi * diameter_tubing * tubing_length * cond_tubing)    # Conduction through tubing
-        R.R_cond_ins = math.log((diameter_insulation)/(diameter_tubing)) / (2.0 * math.pi * diameter_insulation * tubing_length * cond_insulation)    # Conduction through insulation
+        R.R_cond_t = math.log((diameter_tubing)/(diameter_inside)) / (2 * math.pi * tubing_length * cond_tubing)    # Conduction through tubing
+        R.R_cond_ins = math.log((diameter_insulation)/(diameter_tubing)) / (2.0 * math.pi * tubing_length * cond_insulation)    # Conduction through insulation
         R.R_conv_ta = 1.0/(2 * math.pi * diameter_insulation * tubing_length * h('pa',(T[0+1]+T[m*4+1])/2+(T[0+1]+T[m*4+1])/2))    # Convenction from tubing to air
         Resistance = R.R_conv_wt + R.R_cond_t + R.R_cond_ins + R.R_conv_ta
     
@@ -124,6 +128,7 @@ def R(interface):
         Interior_Convection = 1/(A_wall * h('e',(((T[0+1]+T[m*4+1])/2)+T_ext)/2))
         FirstLayer = (6*10**-3)/(1.05 * A_wall) # First layer = first layer of glass
         Resistance = FirstLayer + Interior_Convection
+    print "The resistance of ", str(interface), " is ", Resistance
     return Resistance
 
 def GenTemperatureArray(m):
@@ -309,24 +314,23 @@ def UpdatedTemp(T):
     
     count = 1
     
-    while count < 2: #abs(numpy.amax(Inc)) > 10**(-4):
-        T_new = T_new - Inc 
-        T_local = numpy.concatenate([T[:2], T_new])
-        print "This is the temperature after %d increment" %(count)
-        print T_local
-        print
-        
-        q_new = Residue(m,T_local)
-        print "Updating heat balance with new temperature"
-        print q_new
-        print
-        
-        Inc = Increment(dQ, q_new)
-        print "Updated increment"
-        print Inc
-        print
-        count += 1
-        time.sleep(5)
+    # while count < 2: #abs(numpy.amax(Inc)) > 10**(-4):
+    T_new = T_new - Inc 
+    T_local = numpy.concatenate([T[:2], T_new])
+    #print "This is the temperature after %d increment" %(count)
+    #print T_local
+    #print
+    
+    #q_new = Residue(m,T_local)
+    #print "Updating heat balance with new temperature"
+    #print q_new
+    #print
+    
+    #Inc = Increment(dQ, q_new)
+    #print "Updated increment"
+    #print Inc
+    #print
+    count += 1
     
     T_final = numpy.concatenate([T[:2], T_new])
     return T_final
@@ -352,21 +356,22 @@ As_pipe = 2 * math.pi * (diameter_insulation) * 0.3 # Area m^2
 cond_tubing = 0.145 # Conduction value of silicon tubing
 cond_insulation = 0.037 # Conduction value of silicon insulation
 
-Height_wall = 3
+Height_wall = 0.3
 Width_wall = 0.3
+Depth_caviety = 0.3
 tubing_length = 0.3
 A_wall = Height_wall * Width_wall # Area of glass
 P_wall = 2*Height_wall + 2*Width_wall # Perimeter of the wall
 radius_cavity = 4 * 0.3*0.3 / (0.3*4) / 2  # Hydraulic diameter assuming cavity is 0.3 meters by 0.3 m (cross section)
 
 
-q_receiver = 8.0*10**(-3) # Heat flow into water from Module Heat Receiver
-q_module = 3.0*10**(-3) # Heat flow into air from Heat Loss from the Module
+q_receiver = 0 # 8.0*10**(-3) # Heat flow into water from Module Heat Receiver
+q_module = 0 # 3.0*10**(-3) # Heat flow into air from Heat Loss from the Module
 
 mode = 'forced' # Defines whether the air flow is 'forced' or 'natural'
 m_w = 8.5*10**(-7) * rho_w((T[0]+T[m*4])/2) # Mass flowrate of water = VolumetricFlowrate * DensityWater
 v_a = 2.0 # Flow velocity [m/s]
-m_a = v_a * rho_a((13+30)/2) * radius_cavity # Mass Flowrate of air [kg/s] = velocity [m/s] * DensityAir [kg/m^3] * cross section [m^2]   
+m_a = v_a * rho_a((13+30)/2) * Depth_caviety*Width_wall # Mass Flowrate of air [kg/s] = velocity [m/s] * DensityAir [kg/m^3] * cross section [m^2]   
      
 
 q = Residue(m,T)
