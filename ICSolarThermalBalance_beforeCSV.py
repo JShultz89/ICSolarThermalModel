@@ -340,7 +340,7 @@ m = 1 # Number of Modules
 
 T_int = 22.5 # Temperature on the interior of the building, degrees [C]
 T_ext = 25.0 # Temperature on the exterior of the building, degrees [C]
-T_ai = 20.0 # Inlet temperature of air, degrees [C]
+T_ai = 0.0 # Inlet temperature of air, degrees [C]
 T_wi = 13.0 # Inlet temperature of water, degrees [C]  
 
 T = GenTemperatureArray(m)
@@ -369,7 +369,7 @@ q_receiver = 0 # 8.0*10**(-3) # Heat flow into water from Module Heat Receiver
 q_module = 0 # 3.0*10**(-3) # Heat flow into air from Heat Loss from the Module
 
 mode = 'forced' # Defines whether the air flow is 'forced' or 'natural'
-m_w = 8.5*10**(-7) * rho_w((T[0]+T[m*4])/2) # Mass flowrate of water = VolumetricFlowrate * DensityWater
+m_w = 1.6*10**(-6) * rho_w((T[0]+T[m*4])/2) # Mass flowrate of water = VolumetricFlowrate * DensityWater
 v_a = 2.0 # Flow velocity [m/s]
 m_a = v_a * rho_a((13+30)/2) * Depth_caviety*Width_wall # Mass Flowrate of air [kg/s] = velocity [m/s] * DensityAir [kg/m^3] * cross section [m^2]   
      
